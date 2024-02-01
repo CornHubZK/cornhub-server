@@ -8,7 +8,7 @@ type ProofRequest = {
   id: string;
   minAge: number;
   citizenship: Alpha3Code;
-  status: "pending" | "successful" | "unsuccessful";
+  status: "created" | "pending" | "successful" | "unsuccessful";
 };
 
 const proofRequests: { [key: string]: ProofRequest } = {};
@@ -24,10 +24,24 @@ app.post("/request/create", (req, res) => {
     id,
     minAge,
     citizenship,
-    status: "pending",
+    status: "created",
   };
   proofRequests[id] = proofRequest;
   res.send(proofRequest);
+});
+
+app.post("/request/start", (req, res) => {
+  const { requestId } = req.body;
+  if (!proofRequests[requestId]) {
+    res.status(404).send("Request not found");
+    return;
+  }
+  if (proofRequests[requestId].status !== "created") {
+    res.status(400).send("Request already started");
+    return;
+  }
+  proofRequests[requestId].status = "pending";
+  res.send(proofRequests[requestId]);
 });
 
 app.get("/request/:id", (req, res) => {
