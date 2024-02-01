@@ -14,7 +14,7 @@ type Request = {
 
 const requests: { [key: string]: Request } = {};
 
-const PORT = 3010;
+const PORT = process.env.PORT || 3010;
 
 app.use(bodyParser.json());
 
