@@ -12,7 +12,7 @@ const app = express();
 type ProofRequest = {
   id: string;
   current_date?: string;
-  minAge?: number;
+  min_age?: number;
   citizenship?: Alpha3Code;
   status: "created" | "pending" | "verified" | "failed" | "completed";
   proof?: string;
@@ -25,11 +25,11 @@ const PORT = process.env.PORT || 3010;
 app.use(bodyParser.json());
 
 app.post("/request/create", (req, res) => {
-  const { minAge, citizenship, current_date } = req.body;
+  const { min_age, citizenship, current_date } = req.body;
   const id = randomUUID();
   const proofRequest: ProofRequest = {
     id,
-    minAge,
+    min_age,
     citizenship,
     current_date,
     status: "created",
