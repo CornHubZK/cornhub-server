@@ -23,6 +23,10 @@ const proofRequests: { [key: string]: ProofRequest } = {};
 const PORT = process.env.PORT || 3010;
 
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+  res.append("Access-Control-Allow-Origin", ["*"]);
+  next();
+});
 
 app.post("/request/create", (req, res) => {
   const { min_age, citizenship, current_date } = req.body;
