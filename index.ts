@@ -14,7 +14,7 @@ type ProofRequest = {
   current_date?: string;
   minAge?: number;
   citizenship?: Alpha3Code;
-  status: "created" | "pending" | "successful" | "unsuccessful";
+  status: "created" | "pending" | "verified" | "failed" | "completed";
   proof?: string;
 };
 
@@ -76,7 +76,7 @@ app.post("/request/complete", async (req, res) => {
     return;
   }
 
-  const currentDataBytes = new TextEncoder().encode(proofRequest.current_date);
+  /*const currentDataBytes = new TextEncoder().encode(proofRequest.current_date);
 
   const publicInputs = new Map();
   for (let i = 0; i < currentDataBytes.length; i++) {
@@ -95,9 +95,10 @@ app.post("/request/complete", async (req, res) => {
     publicInputs,
   };
 
-  const verified = await verify(proofOfAge as CompiledCircuit, fullProof);
+  const verified = await verify(proofOfAge as CompiledCircuit, fullProof);*/
 
-  proofRequests[requestId].status = verified ? "successful" : "unsuccessful";
+  proofRequest.proof = proof;
+  proofRequests[requestId].status = "completed";
   res.send(proofRequests[requestId]);
 });
 
