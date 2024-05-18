@@ -14,7 +14,13 @@ type ProofRequest = {
   current_date?: string;
   min_age?: number;
   citizenship?: Alpha3Code;
-  status: "created" | "pending" | "verified" | "failed" | "completed";
+  status:
+    | "created"
+    | "pending"
+    | "verified"
+    | "failed"
+    | "accepted"
+    | "completed";
   proof?: string;
 };
 
@@ -55,6 +61,23 @@ app.post("/request/start", (req, res) => {
     return;
   }
   proofRequests[requestId].status = "pending";
+  res.send(proofRequests[requestId]);
+});
+
+app.post("/request/accept", (req, res) => {
+  const { requestId } = req.body;
+  if (!proofRequests[requestId]) {
+    res.status(404).send("Request not found");
+    return;
+  }
+  if (
+    proofRequests[requestId].status !== "created" &&
+    proofRequests[requestId].status !== "pending"
+  ) {
+    res.status(400).send("Request already accepted");
+    return;
+  }
+  proofRequests[requestId].status = "accepted";
   res.send(proofRequests[requestId]);
 });
 
