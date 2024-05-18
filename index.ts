@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import type { Alpha3Code } from "i18n-iso-countries";
 import { randomUUID } from "crypto";
 import proofOfAge from "./circuits/proof_age.json";
-import { numberToFieldString } from "./lib";
+import { hexToBytesArray, numberToFieldString } from "./lib";
 import { CompiledCircuit, ProofData } from "@noir-lang/backend_barretenberg";
 import { verify } from "./lib/noir";
 
@@ -105,7 +105,7 @@ app.post("/request/complete", async (req, res) => {
     return;
   }
 
-  /*const currentDataBytes = new TextEncoder().encode(proofRequest.current_date);
+  const currentDataBytes = new TextEncoder().encode(proofRequest.current_date);
 
   const publicInputs = new Map();
   for (let i = 0; i < currentDataBytes.length; i++) {
@@ -116,18 +116,18 @@ app.post("/request/complete", async (req, res) => {
   }
   publicInputs.set(
     proofOfAge.abi.param_witnesses.min_age_required[0].start,
-    numberToFieldString(proofRequest.minAge!)
+    numberToFieldString(proofRequest.min_age!)
   );
 
   const fullProof: ProofData = {
-    proof,
+    proof: hexToBytesArray(proof),
     publicInputs,
   };
 
-  const verified = await verify(proofOfAge as CompiledCircuit, fullProof);*/
+  const verified = await verify(proofOfAge as CompiledCircuit, fullProof);
 
   proofRequest.proof = proof;
-  proofRequests[requestId].status = "completed";
+  proofRequests[requestId].status = verified ? "verified" : "failed";
   res.send(proofRequests[requestId]);
 });
 
