@@ -100,7 +100,7 @@ app.post("/request/complete", async (req, res) => {
     return;
   }
 
-  if (proofRequest.status !== "pending") {
+  if (proofRequest.status !== "pending" && proofRequest.status !== "accepted") {
     res.status(400).send("Request already completed");
     return;
   }
